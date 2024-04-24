@@ -1,0 +1,41 @@
+﻿@page "/index"
+@using Cikkek_DB.Model
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject Cikkek_DB.Data.DBContextTobbTabla DB
+@rendermode InteractiveServer
+
+<h3>Index</h3>
+
+<div class="page-size-chooser">
+    Items per page:
+    <select @bind="@state.ItemsPerPage">
+        <option>5</option>
+        <option>10</option>
+        <option>20</option>
+        <option>50</option>
+    </select>
+</div
+
+<div class="page-size-chooser">
+    Users: 
+    <select @bind=@userSelectId>
+        <option>---</option>
+        @foreach (var item in DB.Users)
+        {
+            <option value="@item.UserId">@item.Username</option>
+        }        
+    </select>
+</div>
+
+
+<QuickGrid Class="table" Items=" userSelectId is null ? DB.Articles : DB.Articles.Where(x=>x.UserId==userSelectId)" Pagination="state">
+    <PropertyColumn Title="Cikk" Property="x=>x.Title" Sortable="true"/>
+</QuickGrid>
+<Paginator State="state"/>
+
+
+@code {
+    public int? userSelectId { get; set; }
+
+    PaginationState state = new PaginationState { ItemsPerPage = 5 };
+}
